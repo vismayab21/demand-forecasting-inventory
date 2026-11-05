@@ -1,6 +1,6 @@
 <div align="center">
 
-# 📦 Demand Forecasting & Inventory Policy
+#  Demand Forecasting & Inventory Policy
 
 **Forecast demand. Quantify uncertainty. Make inventory decisions you can defend.**
 
@@ -10,19 +10,19 @@
 ![Reproducible](https://img.shields.io/badge/runs-fully%20auditable-orange)
 ![License](https://img.shields.io/badge/license-MIT-lightgrey)
 
-[✨ Why](#-why-this-project) · [📜 Golden Rules](#-golden-rules) · [🔄 Pipeline](#-how-it-works) · [🚀 Quick Start](#-quick-start) · [🧠 Models](#-modelling-approach) · [🛒 Inventory](#-inventory-policy) · [📊 Metrics](#-evaluation-metrics) · [🤝 Contributing](#-contributing)
+[ Why](#-why-this-project) · [ Golden Rules](#-golden-rules) · [ Pipeline](#-how-it-works) · [ Quick Start](#-quick-start) · [ Models](#-modelling-approach) · [ Inventory](#-inventory-policy) · [ Metrics](#-evaluation-metrics) · [ Contributing](#-contributing)
 
 </div>
 
 ---
 
-## ✨ Why This Project
+##  Why This Project
 
 Stock-outs lose sales and customers. Overstock ties up cash, fills warehouses and leads to markdowns and write-offs. Most teams start by ordering from experience or a spreadsheet moving average, which works until demand becomes **seasonal, promotional, or spread across hundreds of SKUs and several locations**.
 
 This project replaces guesswork with a **repeatable pipeline** that forecasts demand and turns the forecast into concrete inventory decisions.
 
-| 🎯 You get | 💡 How |
+|  You get |  How |
 |---|---|
 | Honest accuracy | Time-based backtesting, no leakage |
 | Decisions, not just numbers | Safety stock, reorder point and order quantity from forecast uncertainty |
@@ -31,7 +31,7 @@ This project replaces guesswork with a **repeatable pipeline** that forecasts de
 
 ---
 
-## 📜 Golden Rules
+##  Golden Rules
 
 > These are non-negotiable. Every contribution and every forecast run is held to them.
 
@@ -48,27 +48,27 @@ This project replaces guesswork with a **repeatable pipeline** that forecasts de
 | 9 | Any change to forecasting or inventory logic **MUST** include tests in `tests/`. | CI |
 
 <details>
-<summary><b>🧐 Why these rules exist (click to expand)</b></summary>
+<summary><b> Why these rules exist (click to expand)</b></summary>
 
 <br>
 
-**🕳️ Data leakage**
+** Data leakage**
 Demand is a time series. If future information leaks into training (random splits, features computed over the full history), accuracy looks excellent in testing and collapses in production. Time-based backtesting is the only honest estimate of how a model will behave next month.
 
-**🎭 Misleading accuracy**
+** Misleading accuracy**
 A single average error hides the fact that high-volume SKUs can be forecast well while slow movers and new products are not. Metrics are reported per SKU/location and per demand class (smooth, intermittent, lumpy). Bias is tracked separately because a consistently over-forecasting model quietly inflates inventory.
 
-**🎲 Point forecasts are not decisions**
+** Point forecasts are not decisions**
 Safety stock exists because forecasts are wrong. The same average forecast needs very different buffers for a stable product and a volatile one, and for a 2-day versus a 30-day lead time. Inventory policy is computed from the forecast distribution and lead-time variability.
 
-**🔍 Reproducibility**
+** Reproducibility**
 When a planner asks why last month's order was so large, the answer must be traceable to a data version, a model and a set of parameters. Run metadata and logged overrides make forecasts auditable.
 
 </details>
 
 ---
 
-## 🔄 How It Works
+##  How It Works
 
 ```mermaid
 flowchart LR
@@ -86,7 +86,7 @@ flowchart LR
 
 ---
 
-## 🗂️ Project Structure
+##  Project Structure
 
 <details>
 <summary><b>Click to explore the layout</b></summary>
@@ -114,7 +114,7 @@ flowchart LR
 
 ---
 
-## 🧾 Data Requirements
+##  Data Requirements
 
 One row per **SKU × location × period** (daily or weekly).
 
@@ -134,9 +134,9 @@ One row per **SKU × location × period** (daily or weekly).
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
-**1️⃣ Set up the environment**
+**1️ Set up the environment**
 
 ```bash
 python -m venv .venv
@@ -144,39 +144,39 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-**2️⃣ Drop extracts into `data/raw/` and validate**
+**2️ Drop extracts into `data/raw/` and validate**
 
 ```bash
 python -m src.ingestion.validate --input data/raw/
 ```
 
-**3️⃣ Build features and run a backtest**
+**3️ Build features and run a backtest**
 
 ```bash
 python -m src.evaluation.backtest --config config/backtest.yaml
 ```
 
-**4️⃣ Generate forecasts and inventory recommendations**
+**4️ Generate forecasts and inventory recommendations**
 
 ```bash
 python -m src.models.forecast --horizon 12 --config config/forecast.yaml
 python -m src.inventory.recommend --config config/service_levels.yaml
 ```
 
-📁 Outputs land in `reports/runs/<run_id>/`.
+ Outputs land in `reports/runs/<run_id>/`.
 
 ---
 
-## 🧠 Modelling Approach
+##  Modelling Approach
 
 Models are chosen **per demand pattern, from simple to complex**.
 
 | Tier | Models | Best for |
 |---|---|---|
-| 🟢 **Baselines** | Naive, seasonal naive, moving average | The bar every model must clear |
-| 🔵 **Statistical** | ETS, ARIMA/SARIMA | Trend and seasonality on stable series |
-| 🟣 **Intermittent** | Croston, SBA | Slow movers with many zero periods |
-| 🔴 **Machine learning** | LightGBM / XGBoost with lag, rolling, calendar, price and promo features, trained globally across SKUs | Large catalogs with promotions and shared patterns |
+|  **Baselines** | Naive, seasonal naive, moving average | The bar every model must clear |
+|  **Statistical** | ETS, ARIMA/SARIMA | Trend and seasonality on stable series |
+|  **Intermittent** | Croston, SBA | Slow movers with many zero periods |
+|  **Machine learning** | LightGBM / XGBoost with lag, rolling, calendar, price and promo features, trained globally across SKUs | Large catalogs with promotions and shared patterns |
 
 > A more complex model is adopted **only** when it beats the simpler one in backtesting on the metrics that matter for the business.
 
@@ -188,16 +188,16 @@ For each SKU/location, the pipeline computes:
 
 | Output | Formula / Method |
 |---|---|
-| 🛡️ **Safety stock** | `z × σ_LT`, where `z` comes from the target service level and `σ_LT` is the forecast error over the lead time (including lead-time variability) |
-| 🔔 **Reorder point** | Expected demand during lead time + safety stock |
-| 📦 **Order quantity** | EOQ or min/max rules, adjusted for MOQ and pack size |
-| 🚨 **Alerts** | Projected stock-outs, excess stock, slow-moving items |
+|  **Safety stock** | `z × σ_LT`, where `z` comes from the target service level and `σ_LT` is the forecast error over the lead time (including lead-time variability) |
+|  **Reorder point** | Expected demand during lead time + safety stock |
+|  **Order quantity** | EOQ or min/max rules, adjusted for MOQ and pack size |
+|  **Alerts** | Projected stock-outs, excess stock, slow-moving items |
 
-🎚️ Target service levels live in `config/service_levels.yaml`.
+ Target service levels live in `config/service_levels.yaml`.
 
 ---
 
-## 📊 Evaluation Metrics
+##  Evaluation Metrics
 
 | Metric | What it tells you | Read it as |
 |---|---|---|
@@ -209,7 +209,7 @@ For each SKU/location, the pipeline computes:
 
 ---
 
-## ✍️ Managing Forecast Overrides
+##  Managing Forecast Overrides
 
 Planners sometimes know things the data does not: a new contract, a supplier issue, a planned campaign.
 
@@ -219,7 +219,7 @@ Planners sometimes know things the data does not: a new contract, a supplier iss
 
 ---
 
-## 🔁 Retraining & Monitoring
+##  Retraining & Monitoring
 
 Models are retrained on a schedule (weekly or monthly) or when monitoring detects drift.
 
@@ -238,7 +238,7 @@ Models are retrained on a schedule (weekly or monthly) or when monitoring detect
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 - [ ] Keep production logic in `src/`; notebooks are for exploration only
 - [ ] Add or update tests for any change to features, models or inventory formulas
@@ -247,7 +247,7 @@ Models are retrained on a schedule (weekly or monthly) or when monitoring detect
 
 ---
 
-## 📄 License
+##  License
 
 Released under the **MIT License**. Replace this with your own license if different.
 
